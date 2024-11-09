@@ -1,10 +1,12 @@
-import dao.ActorDAO;
+import dao.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 
 import java.util.Properties;
 import entitites.*;
+import service.CustomerService;
+import service.RentalService;
 
 public class Main
 {
@@ -22,6 +24,9 @@ public class Main
     private final RentalDAO rentalDAO;
     private final StaffDAO staffDAO;
     private final StoreDAO storeDAO;
+
+    private final  CustomerService customerService;
+    private final RentalService rentalService;
     private final SessionFactory sessionFactory;
     public Main()
     {
@@ -44,7 +49,7 @@ public class Main
                 .addProperties(properties)
                 .buildSessionFactory();
 
-        actorDAO=new ActorDAO(sessionFactory);
+            actorDAO=new ActorDAO(sessionFactory);
           addressDAO=new AddressDAO(sessionFactory);
           categoryDAO=new CategoryDAO(sessionFactory);
           cityDAO=new CityDAO(sessionFactory);
@@ -57,6 +62,10 @@ public class Main
           rentalDAO=new RentalDAO(sessionFactory);
           staffDAO=new StaffDAO(sessionFactory);
           storeDAO=new StoreDAO(sessionFactory);
+          languageDAO=new LanguageDAO(sessionFactory);
+          customerService=new CustomerService(sessionFactory, storeDAO, cityDAO, addressDAO, customerDAO);
+          rentalService=new RentalService(sessionFactory,rentalDAO);
+
     }
 
     private static Properties getProperties() {
@@ -72,7 +81,11 @@ public class Main
     }
 
     public static void main(String[] args) {
-    Main main=new Main();
+        Main main=new Main();
+
+        Customer newCustomer = main.customerService.createCustomer();
+        main.rentalService.customerReturnInventoryToStore();
+        
 
     }
 }
