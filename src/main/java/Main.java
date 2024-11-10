@@ -6,6 +6,8 @@ import org.hibernate.cfg.Environment;
 import java.util.Properties;
 import entitites.*;
 import service.CustomerService;
+import service.FilmService;
+import service.InventoryService;
 import service.RentalService;
 
 public class Main
@@ -27,7 +29,9 @@ public class Main
 
     private final  CustomerService customerService;
     private final RentalService rentalService;
+    private final InventoryService inventoryService;
     private final SessionFactory sessionFactory;
+    private final FilmService filmService;
     public Main()
     {
         Properties properties = getProperties();
@@ -64,7 +68,9 @@ public class Main
           storeDAO=new StoreDAO(sessionFactory);
           languageDAO=new LanguageDAO(sessionFactory);
           customerService=new CustomerService(sessionFactory, storeDAO, cityDAO, addressDAO, customerDAO);
+        inventoryService=new InventoryService(sessionFactory,filmDAO,storeDAO,inventoryDAO,rentalDAO,paymentDAO);
           rentalService=new RentalService(sessionFactory,rentalDAO);
+          filmService=new FilmService(filmDAO,actorDAO,languageDAO,sessionFactory,categoryDAO);
 
     }
 
@@ -85,7 +91,8 @@ public class Main
 
         Customer newCustomer = main.customerService.createCustomer();
         main.rentalService.customerReturnInventoryToStore();
-        
+        main.inventoryService.customerRentInventory(newCustomer);
+        main.filmService.addNewFilm();
 
     }
 }

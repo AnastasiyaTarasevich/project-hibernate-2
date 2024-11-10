@@ -1,7 +1,6 @@
 package dao;
 
 import entitites.Actor;
-import lombok.AllArgsConstructor;
 import org.hibernate.SessionFactory;
 
 
